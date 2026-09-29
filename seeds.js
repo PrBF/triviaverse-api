@@ -1,4 +1,4 @@
-import { Usuario } from "./models/usuario.js"
+import Usuario from "./models/usuario.js"
 
 const usuario1 = new Usuario({
      nome: 'Eu',
