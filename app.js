@@ -85,7 +85,7 @@ app.post('/logout', (req, res) => {
 });
 
 //Grava novo usuário
-app.post('/usuarios', verificarToken, async (req, res) => {
+app.post('/usuarios', async (req, res) => {
     let { nome, email, senha } = req.body;
     nome = xss(nome)
     email = xss(email)
