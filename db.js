@@ -5,7 +5,7 @@ dotenv.config();
 
 mongoose.connect(process.env.DATABASE_URL)
     .then(() => {
-        console.log('Conexão estabelecida com o banco!')
+        // console.log('Conexão estabelecida com o banco!')
     })
     .catch(err => {
         console.log('Erro ao conectar ao banco.')

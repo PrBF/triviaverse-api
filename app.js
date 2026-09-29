@@ -235,3 +235,7 @@ app.patch('/usuarios/:id/progresso', verificarToken, async (req, res) => {
         return res.status(500).json({ message: 'Erro interno ao atualizar usuário.' });
     }
 });
+
+app.listen(process.env.PORT, () => {
+    console.log(`Servidor ligado na porta ${process.env.PORT}!`)
+})
