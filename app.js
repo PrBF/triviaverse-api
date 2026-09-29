@@ -242,11 +242,11 @@ app.delete('/usuarios/:id', verificarToken, async (req, res) => {
     try {
         // BLINDAGEM DE SEGURANÇA: Impede que um usuário apague a conta de outro
         // O middleware 'verificarToken' injetou os dados do token em 'req.usuario'
-        // if (req.usuario.userId !== id && req.usuario.role !== 'admin') {
-        //     return res.status(403).json({ 
-        //         message: 'Acesso negado. Você não tem permissão para apagar este usuário.' 
-        //     });
-        // }
+        if (req.usuario.userId !== id && req.usuario.role !== 'admin') {
+            return res.status(403).json({ 
+                message: 'Acesso negado. Você não tem permissão para apagar este usuário.' 
+            });
+        }
 
         // VALIDAÇÃO DE EXISTÊNCIA: Verifica se o usuário realmente existe no banco
         const usuarioApagado = await Usuario.findByIdAndDelete(id);
