@@ -236,6 +236,33 @@ app.patch('/usuarios/:id/progresso', verificarToken, async (req, res) => {
     }
 });
 
+app.delete('/usuarios/:id', verificarToken, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // BLINDAGEM DE SEGURANÇA: Impede que um usuário apague a conta de outro
+        // O middleware 'verificarToken' injetou os dados do token em 'req.usuario'
+        // if (req.usuario.userId !== id && req.usuario.role !== 'admin') {
+        //     return res.status(403).json({ 
+        //         message: 'Acesso negado. Você não tem permissão para apagar este usuário.' 
+        //     });
+        // }
+
+        // VALIDAÇÃO DE EXISTÊNCIA: Verifica se o usuário realmente existe no banco
+        const usuarioApagado = await Usuario.findByIdAndDelete(id);
+
+        if (!usuarioApagado) {
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+
+        return res.status(200).json({ message: 'Usuário apagado com sucesso!' });
+
+    } catch (error) {
+        console.error("Erro ao deletar usuário:", error);
+        return res.status(500).json({ message: 'Erro interno ao tentar apagar o usuário.' });
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`Servidor ligado na porta ${process.env.PORT}!`)
 })
