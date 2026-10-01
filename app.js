@@ -108,18 +108,6 @@ app.post('/usuarios', async (req, res) => {
     }
 })
 
-//Retorna todos os usuários
-//Não precisa nesse projeto
-// app.get('/usuarios', verificarToken, async (req, res) => {
-//     try {
-//         // Busca todos os usuários e remove o campo 'senha' do retorno
-//         const usuarios = await Usuario.find({}).select('-senha');
-//         return res.status(200).json(usuarios);
-//     } catch (error) {
-//         return res.status(500).json({ message: 'Erro ao buscar usuários.' });
-//     }
-// })
-
 //Retorna os dados do usuário logado
 app.get('/usuarios', verificarToken, async (req, res) => {
     const idUsuario = req.usuario.userId; // Obtém o ID do usuário autenticado pelo token
@@ -145,7 +133,7 @@ app.patch('/usuarios', verificarToken, async (req, res) => {
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             idUsuario,
             { nome, email },
-            { runValidators: true, returnDocument: 'after' } // Substituído aqui
+            { runValidators: true, returnDocument: 'after' }
         ).select('-senha');
 
         if (!usuarioAtualizado) {
@@ -206,13 +194,13 @@ app.patch('/usuarios/senha', verificarToken, async (req, res) => {
 // Altera o progresso do usuário logado
 app.patch('/usuarios/progresso', verificarToken, async (req, res) => {
     const idUsuario = req.usuario.userId;
-    let { nivel, vidas } = req.body; // Recebe os números diretamente
+    let { nivel, vidas } = req.body;
 
     try {
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             idUsuario,
             { nivel, vidas },
-            { runValidators: true, returnDocument: 'after' } // Substituído aqui
+            { runValidators: true, returnDocument: 'after' }
         ).select('-senha');
 
         if (!usuarioAtualizado) {
@@ -250,7 +238,7 @@ app.get('/usuarios/cartas', verificarToken, async (req, res) => {
 // Adiciona uma carta ao inventário do usuário autenticado
 app.post('/usuarios/cartas', verificarToken, async (req, res) => {
     const idUsuario = req.usuario.userId;
-    let { carta } = req.body; // O nome ou identificador string da carta
+    let { carta } = req.body;
 
     if (!carta) {
         return res.status(400).json({ message: 'O nome ou ID da carta é obrigatório.' });
@@ -262,7 +250,7 @@ app.post('/usuarios/cartas', verificarToken, async (req, res) => {
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             idUsuario,
             { $push: { cartas: carta } },
-            { returnDocument: 'after' } // Substituído aqui
+            { returnDocument: 'after' }
         ).select('-senha');
 
 
@@ -292,7 +280,7 @@ app.delete('/usuarios/cartas/:nomeCarta', verificarToken, async (req, res) => {
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             idUsuario,
             { $pull: { cartas: nomeCarta } },
-            { returnDocument: 'after' } // Substituído aqui
+            { returnDocument: 'after' }
         ).select('-senha');
 
 
@@ -311,14 +299,6 @@ app.delete('/usuarios', verificarToken, async (req, res) => {
     const idUsuario = req.usuario.userId;
 
     try {
-        // BLINDAGEM DE SEGURANÇA: Impede que um usuário apague a conta de outro
-        // O middleware 'verificarToken' injetou os dados do token em 'req.usuario'
-        // if (req.usuario.userId !== id && req.usuario.role !== 'admin') {
-        //     return res.status(403).json({ 
-        //         message: 'Acesso negado. Você não tem permissão para apagar este usuário.' 
-        //     });
-        // }
-
         // VALIDAÇÃO DE EXISTÊNCIA: Verifica se o usuário realmente existe no banco
         const usuarioApagado = await Usuario.findByIdAndDelete(idUsuario);
 
