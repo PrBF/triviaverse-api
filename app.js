@@ -65,7 +65,7 @@ app.post('/login', async (req, res) => {
         // Retorna dados públicos do usuário para o front se achar necessário
         return res.status(200).json({
             message: 'Login efetuado com sucesso!',
-            user: { id: usuario._id, nome: usuario.nome, email: usuario.email, nivel: usuario.nivel, vidas: usuario.vidas, cartas: usuario.cartas}
+            user: { id: usuario._id, nome: usuario.nome, email: usuario.email, nivel: usuario.nivel, vidas: usuario.vidas, cartas: usuario.cartas }
         });
 
     } catch (error) {
@@ -142,12 +142,11 @@ app.patch('/usuarios', verificarToken, async (req, res) => {
     if (email) email = xss(email.toLowerCase()); // Força e-mail minúsculo para consistência
 
     try {
-        //{ new: true } para retornar o usuário atualizado
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             idUsuario,
             { nome, email },
-            { runValidators: true, new: true }
-        ).select('-senha'); // Oculta a senha por segurança
+            { runValidators: true, returnDocument: 'after' } // Substituído aqui
+        ).select('-senha');
 
         if (!usuarioAtualizado) {
             return res.status(404).json({ message: 'Usuário não encontrado.' });
@@ -212,8 +211,8 @@ app.patch('/usuarios/progresso', verificarToken, async (req, res) => {
     try {
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             idUsuario,
-            { nivel, vidas }, // O Mongoose já valida se são números válidos
-            { runValidators: true, new: true }
+            { nivel, vidas },
+            { runValidators: true, returnDocument: 'after' } // Substituído aqui
         ).select('-senha');
 
         if (!usuarioAtualizado) {
@@ -263,8 +262,9 @@ app.post('/usuarios/cartas', verificarToken, async (req, res) => {
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             idUsuario,
             { $push: { cartas: carta } },
-            { new: true }
+            { returnDocument: 'after' } // Substituído aqui
         ).select('-senha');
+
 
         return res.status(200).json({
             message: 'Carta adicionada com sucesso!',
@@ -292,8 +292,9 @@ app.delete('/usuarios/cartas/:nomeCarta', verificarToken, async (req, res) => {
         const usuarioAtualizado = await Usuario.findByIdAndUpdate(
             idUsuario,
             { $pull: { cartas: nomeCarta } },
-            { new: true }
+            { returnDocument: 'after' } // Substituído aqui
         ).select('-senha');
+
 
         return res.status(200).json({
             message: 'Carta utilizada/removida com sucesso!',
