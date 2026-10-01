@@ -5,8 +5,9 @@ const usuarioSchema = new mongoose.Schema({
     nome: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     senha: { type: String, required: true },
-    nivel: Number,
-    vidas: Number
+    nivel: { type: Number, default: 1 },
+    vidas: { type: Number, default: 5 },
+    cartas: { type: [String], default: [] } // Texto simples e inicializado automaticamente como vazio!
 }, { timestamps: true });
 
 // GATILHO: Roda automaticamente ANTES de salvar o usuário no banco de dados
